@@ -1,4 +1,4 @@
-import { PsbtV2 } from "../lib/psbtv2";
+import { PsbtV2 } from "../../lib/psbtv2";
 
 describe("PsbtV2", () => {
   it("deserializes a psbtV2 and reserializes it unchanged", async () => {

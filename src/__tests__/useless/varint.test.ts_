@@ -1,4 +1,4 @@
-import { createVarint, parseVarint, sanitizeBigintToNumber } from "../lib/varint";
+import { createVarint, parseVarint, sanitizeBigintToNumber } from "../../lib/varint";
 
 describe("sanitizeBigintToNumber", () => {
   it("throws for negative number", async () => {
