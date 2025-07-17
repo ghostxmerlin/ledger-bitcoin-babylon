@@ -14,6 +14,7 @@ import { createVarint, parseVarint } from './varint';
 
 const CLA_BTC = 0xe1;
 const CLA_FRAMEWORK = 0xf8;
+const INS_DATA = 0xbb;
 
 const CURRENT_PROTOCOL_VERSION = 1; // supported from version 2.1.0 of the app
 
@@ -273,8 +274,8 @@ export class AppClient {
    * @param payload the data payload to send
    * @returns the complete response including status word
    */
-  async dataPrepare(ins: number, payload: Buffer): Promise<Buffer> {
-    return await sendMerkleizedDataWithStatus(this, ins, payload);
+  async dataPrepare(payload: Buffer): Promise<Buffer> {
+    return await sendMerkleizedDataWithStatus(this, INS_DATA, payload);
   }
 
   /**
