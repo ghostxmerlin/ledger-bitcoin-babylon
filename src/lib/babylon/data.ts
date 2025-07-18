@@ -1,5 +1,8 @@
+
 /*
 TAG=1 LEN=2 Value
+Action Type:  1=Staking 2=Unbond 3=SLASHING 4=UNBONDING SLASHING
+5=WITHDRAW 6=SIGN MESSAGE
 Action Type:                  TAG 0x77  LEN 00 01      VALUE action type
 Finality provider count:      TAG 0xf9  LEN 00 0n      VALUE count
 Finality provider list:       TAG 0xf8  LEN 32*n       VALUE n pubkey
@@ -14,13 +17,16 @@ unbonding fee limit:          TAG 0xff  LEN 00 08      VALUE limit uint64
 */
 
 /**
- * 将 stakingTxPolicy 参数编码为 TLV 格式的 Buffer
- * @param timelockBlocks 质押时间锁定块数
- * @param finalityProviders 最终性提供者公钥数组
- * @param covenantThreshold 盟约阈值
- * @param covenantPks 盟约公钥数组
- * @returns 编码后的 TLV Buffer
+ * Encodes staking transaction policy parameters into a TLV (Tag-Length-Value) formatted Buffer.
+ *
+ * @param timelockBlocks - The number of blocks for the staking timelock (uint64).
+ * @param finalityProviders - An array of finality provider public keys (hex strings, each 32 bytes).
+ * @param covenantThreshold - The threshold value for the covenant (quorum).
+ * @param covenantPks - An array of covenant public keys (hex strings, each 32 bytes).
+ * @returns The encoded TLV Buffer representing the staking transaction policy.
+ * @throws {Error} If any public key is not 32 bytes in length.
  */
+
 export function encodeStakingTxPolicyToTLV(
   timelockBlocks: number,
   finalityProviders: string[],
@@ -28,6 +34,11 @@ export function encodeStakingTxPolicyToTLV(
   covenantPks: string[]
 ): Buffer {
   const buffers: Buffer[] = [];
+
+  // Action Type: TAG 0x77 LEN 00 01 VALUE action type (1=Staking)
+  buffers.push(Buffer.from([0x77])); // TAG
+  buffers.push(Buffer.from([0x00, 0x01])); // LEN (2 bytes)
+  buffers.push(Buffer.from([0x01])); // VALUE (1 = Staking)
 
   // Finality provider count: TAG 0xf9 LEN 00 0n VALUE count
   const fpCount = finalityProviders.length;
@@ -54,7 +65,7 @@ export function encodeStakingTxPolicyToTLV(
   // Cov key count: TAG 0xc0 LEN 00 0n VALUE count
   const covCount = covenantPks.length;
   buffers.push(Buffer.from([0xc0])); // TAG
-  buffers.push(Buffer.from([0x00, covCount])); // LEN (2 bytes)
+  buffers.push(Buffer.from([0x00, 1])); // LEN (2 bytes)
   buffers.push(Buffer.from([covCount])); // VALUE
 
   // Cov key list: TAG 0xc1 LEN 32*n VALUE n pubkey
